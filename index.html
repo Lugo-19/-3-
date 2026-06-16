@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#1a0e1f">
+<title>Para ti 💛</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #fbeef3;
+    --ink-soft: #efd9e4;
+    --accent: #ff9ec7;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    min-height:100dvh;
+    overflow:hidden;
+    background: linear-gradient(135deg, #1a0e1f, #3a1830, #5c2746, #2a1330);
+    background-size: 300% 300%;
+    animation: bgShift 24s ease-in-out infinite;
+    color: var(--ink);
+    font-family:'Poppins', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select:none; -webkit-user-select:none;
+    overscroll-behavior:none;
+  }
+  body.calm{
+    background: linear-gradient(135deg, #2a1226, #5c2746, #7a3457, #3a1830);
+    background-size: 300% 300%;
+    animation: bgShift 34s ease-in-out infinite;
+  }
+  @keyframes bgShift{
+    0%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+    100%{ background-position:0% 50%; }
+  }
+
+  /* ---------- Capas ---------- */
+  .layer{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+    padding: max(4vh, env(safe-area-inset-top)) 6vw max(5vh, env(safe-area-inset-bottom));
+  }
+  #bokeh{ z-index:0; overflow:hidden; }
+  .vignette{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background: radial-gradient(125% 85% at 50% 32%, transparent 38%, rgba(10,2,8,.55) 100%);
+  }
+  #messageLayer{ z-index:3; }
+  #mediaLayer{ z-index:3; }
+  #recetaLayer{ z-index:3; }
+  #finalLayer{ z-index:4; }
+
+  /* ---------- Bokeh / luces flotantes ---------- */
+  .bokeh{
+    position:absolute; border-radius:50%;
+    background: radial-gradient(circle at 32% 30%, var(--c), transparent 70%);
+    filter: blur(14px);
+    opacity:0; will-change: transform, opacity;
+    animation: floatUp var(--d) linear var(--delay) infinite;
+  }
+  @keyframes floatUp{
+    0%{ transform: translateY(112vh) scale(.7); opacity:0; }
+    12%{ opacity: var(--o); }
+    88%{ opacity: var(--o); }
+    100%{ transform: translateY(-22vh) scale(1.15); opacity:0; }
+  }
+
+  /* ---------- Mensajes ---------- */
+  .message{
+    position:absolute;
+    max-width: 18ch;
+    text-align:center;
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-weight:500;
+    font-size: clamp(1.7rem, 7.6vw, 2.9rem);
+    line-height: 1.32;
+    letter-spacing:.2px;
+    color: var(--ink);
+    text-shadow: 0 2px 26px rgba(255,150,190,.30), 0 1px 2px rgba(0,0,0,.35);
+    opacity:0;
+    transform: translateY(30px) scale(.975);
+    filter: blur(9px);
+    transition:
+      opacity 1.15s cubic-bezier(.2,.7,.2,1),
+      transform 1.3s cubic-bezier(.2,.7,.2,1),
+      filter 1.15s cubic-bezier(.2,.7,.2,1);
+  }
+  .message.in{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+  .message.out{ opacity:0; transform: translateY(-28px) scale(1.025); filter: blur(11px); }
+
+  /* ---------- Tarjeta de recuerdito ---------- */
+  .card{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap: clamp(16px, 3.4vh, 30px);
+    padding: 5vh 6vw;
+    opacity:0; transform: scale(1.045); filter: blur(7px);
+    transition:
+      opacity 1.2s ease,
+      transform 1.5s cubic-bezier(.2,.7,.2,1),
+      filter 1.2s ease;
+  }
+  .card.in{ opacity:1; transform: scale(1); filter: blur(0); }
+  .card.out{ opacity:0; transform: scale(1.03); filter: blur(9px); }
+  .card .bg{
+    position:absolute; inset:0; z-index:-1;
+    background-size:cover; background-position:center;
+    filter: blur(36px) brightness(.5) saturate(1.25);
+    transform: scale(1.3);
+  }
+  .frame{
+    position:relative;
+    border-radius: clamp(16px, 4.5vw, 26px);
+    overflow:hidden;
+    background:#0c0710;
+    box-shadow: 0 26px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.07), inset 0 0 0 1px rgba(255,255,255,.04);
+    max-width: min(88vw, 520px);
+    max-height: 60vh;
+    line-height:0;
+  }
+  .frame img, .frame video{
+    display:block; width:auto; height:auto;
+    max-width: min(88vw, 520px);
+    max-height: 60vh;
+    object-fit: contain;
+  }
+  .frame img.kb{ animation: kenburns 8.5s ease-out forwards; }
+  @keyframes kenburns{
+    from{ transform: scale(1.015) translate(0,0); }
+    to{ transform: scale(1.11) translate(-1.4%, -1.6%); }
+  }
+  .cap{
+    max-width: 26ch;
+    text-align:center;
+    font-family:'Poppins', system-ui, sans-serif;
+    font-weight:300;
+    font-size: clamp(1rem, 4.4vw, 1.22rem);
+    line-height:1.45;
+    color: var(--ink-soft);
+    text-shadow: 0 2px 14px rgba(0,0,0,.5);
+    opacity:0; transform: translateY(16px);
+    transition: opacity .9s ease .3s, transform 1s cubic-bezier(.2,.7,.2,1) .3s;
+  }
+  .cap::before{
+    content:''; display:block;
+    width:34px; height:1px; margin:0 auto 14px;
+    background: linear-gradient(90deg, transparent, rgba(255,170,200,.8), transparent);
+    transform: scaleX(0); transform-origin:center;
+    transition: transform .9s ease .45s;
+  }
+  .card.in .cap{ opacity:1; transform: translateY(0); }
+  .card.in .cap::before{ transform: scaleX(1); }
+
+  /* ---------- Recetas (montaje rápido) ---------- */
+  .receta{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    padding: 6vh 8vw;
+    opacity:0; transform: scale(1.06); filter: blur(7px);
+    transition: opacity .55s ease, transform .7s cubic-bezier(.2,.7,.2,1), filter .55s ease;
+  }
+  .receta.in{ opacity:1; transform: scale(1); filter: blur(0); }
+  .receta.out{ opacity:0; transform: scale(.975); filter: blur(7px); }
+  .receta .bg{
+    position:absolute; inset:0; z-index:-1;
+    background-size:cover; background-position:center;
+    filter: blur(34px) brightness(.45) saturate(1.2);
+    transform: scale(1.3);
+  }
+  .receta .pic{
+    border-radius: clamp(14px, 4vw, 22px);
+    box-shadow: 0 20px 56px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
+    background-size:cover; background-position:center;
+    width: min(80vw, 440px);
+    height: min(56vh, 560px);
+  }
+
+  /* ---------- Mensaje final ---------- */
+  .final{
+    position:absolute;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap: clamp(20px, 4vh, 34px);
+    max-width: 24ch;
+    padding: 4vh 7vw;
+    text-align:center;
+    opacity:0; transform: translateY(26px) scale(.99); filter: blur(8px);
+    transition: opacity 1.8s ease, transform 2s cubic-bezier(.2,.7,.2,1), filter 1.8s ease;
+  }
+  .final.in{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+  .final-text{
+    font-family:'Cormorant Garamond', Georgia, serif;
+    font-weight:500; font-style:italic;
+    font-size: clamp(1.45rem, 6.2vw, 2.3rem);
+    line-height:1.4;
+    color: var(--ink);
+    text-shadow: 0 2px 30px rgba(255,150,190,.32), 0 1px 2px rgba(0,0,0,.4);
+  }
+  .final-heart{
+    font-size: clamp(2rem, 9vw, 3rem);
+    color:#ff6f91;
+    filter: drop-shadow(0 0 18px rgba(255,111,145,.6));
+    animation: beat 1.8s ease-in-out infinite;
+  }
+  @keyframes beat{
+    0%,100%{ transform: scale(1); }
+    14%{ transform: scale(1.18); }
+    28%{ transform: scale(1); }
+    42%{ transform: scale(1.12); }
+  }
+
+  /* ---------- Botón repetir ---------- */
+  #replay{
+    position:fixed; left:50%; bottom: max(26px, env(safe-area-inset-bottom));
+    transform: translateX(-50%) scale(.8);
+    z-index:6;
+    width:52px; height:52px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: var(--ink); font-size:1.5rem; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; opacity:0; pointer-events:none;
+    transition: opacity 1s ease, transform 1s ease, background .3s ease;
+  }
+  #replay.show{ opacity:.85; transform: translateX(-50%) scale(1); pointer-events:auto; }
+  #replay:active{ background: rgba(255,255,255,.18); }
+
+  /* ---------- Progreso sutil ---------- */
+  #progress{
+    position:fixed; left:0; top:0; height:2px; width:0%;
+    z-index:6; pointer-events:none;
+    background: linear-gradient(90deg, rgba(255,150,190,.0), rgba(255,150,190,.75));
+    box-shadow: 0 0 10px rgba(255,150,190,.6);
+    transition: width 1.2s linear;
+    opacity:.55;
+  }
+
+  /* ---------- Loader + fade ---------- */
+  #loader{
+    position:fixed; inset:0; z-index:9;
+    display:flex; align-items:center; justify-content:center;
+    background: #150a18;
+    transition: opacity 1s ease;
+  }
+  #loader.hide{ opacity:0; pointer-events:none; }
+  #loader .lheart{
+    font-size:3rem; color:#ff6f91;
+    filter: drop-shadow(0 0 22px rgba(255,111,145,.7));
+    animation: beat 1.6s ease-in-out infinite;
+  }
+  #fadein{
+    position:fixed; inset:0; z-index:8; background:#150a18;
+    opacity:0; pointer-events:none; transition: opacity 1.2s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .message, .card, .receta, .final{ filter:none !important; }
+    .message{ transform: translateY(10px); }
+    .message.out{ transform: translateY(-10px); }
+    .frame img.kb{ animation:none; }
+    .bokeh{ animation-duration: 40s; }
+    body, body.calm{ animation: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="bokeh" class="layer"></div>
+  <div class="vignette"></div>
+
+  <main>
+    <div id="messageLayer" class="layer"></div>
+    <div id="mediaLayer" class="layer"></div>
+    <div id="recetaLayer" class="layer"></div>
+    <div id="finalLayer" class="layer"></div>
+  </main>
+
+  <div id="progress"></div>
+  <button id="replay" aria-label="Repetir">&#8635;</button>
+  <div id="fadein"></div>
+  <div id="loader"><div class="lheart">&#10084;</div></div>
+
+<script>
+/* ============================================================
+   CONTENIDO  (texto LITERAL — no se modifica ortografía)
+   ============================================================ */
+
+// FASE 1 — Mensajes de intro
+const messages = [
+  "Quizá no sea el mejor momento ni la forma jeje",
+  "me encantaría poder expresarte muchas cosas",
+  "pero mientras aprendo a hacerlo mejor gasto tokens jajajaja",
+  "no quiere decir que esto lo escriba la IA",
+  "esto lo escribo yo al 100% :P",
+  "aun no pasa por mi cabeza o mucho que he compartido contigo",
+  "Momentos bonitos, muchos altibajos",
+  "pero entre todo, siempre a tu lado",
+  "estoy aprendiendo a amarte de muchas formas y entre esas aveces caen situaciones como esta",
+  "donde me doy cuenta de cosas por mejorar",
+  "lamento ser tan torpe, pero quiero que sepas que con todo mi ser lo unico que quiero",
+  "es lo mejor para tí, y quizá yo no lo soy, pero es lo que me impulsa a mejorar",
+  "para poder ser esa persona que tanto mereces",
+  "te dejo algunos recuerditos :)"
+];
+
+// FASE 2 — Recuerditos.  ORDEN PROVISIONAL (el usuario lo dictará).
+// Para reordenar: solo mover las líneas de este arreglo.
+const recuerditos = [
+  { type:'photo', src:'assets/img/mem-primera-salidita.jpeg',     caption:'Primera salidita juntos' },
+  { type:'photo', src:'assets/img/mem-concierto.jpeg',            caption:'Nuestra primera vez en un concierto jajaja, mi foto favorita' },
+  { type:'video', src:'assets/vid/mem-primera-casa.mp4',          caption:'La primera vez que fuí a tu casa bien concentido jajaja' },
+  { type:'video', src:'assets/vid/mem-ojitos.mp4',                caption:'tus hermosos ojitos' },
+  { type:'photo', src:'assets/img/mem-hermosa.jpeg',              caption:'No sé como haces para salir tan hermosa en todas las fotos' },
+  { type:'photo', src:'assets/img/mem-lamparita.jpeg',            caption:'lamparita que me llevo hora y media armar jajaja' },
+  { type:'photo', src:'assets/img/mem-lamparita-resultado.jpeg',  caption:'Resultado de la lamparita despues de la hora y media jajaja' },
+  { type:'photo', src:'assets/img/mem-arreglo.jpeg',              caption:'Mi primer arreglo hecho jajaja' },
+  { type:'photo', src:'assets/img/mem-borracha.jpeg',             caption:'Tu borracha despues de haberme hecho caminar todo un centro comercial buscando un llavero jajajjaja' },
+  { type:'video', src:'assets/vid/mem-silla.mp4',                 caption:'tu en silla de ruedas' }
+];
+
+// FASE 3 — Recetas (montaje rápido, sin texto)
+const recetas = [
+  'assets/receta/receta-01.jpeg','assets/receta/receta-02.jpeg','assets/receta/receta-03.jpeg',
+  'assets/receta/receta-04.jpeg','assets/receta/receta-05.jpeg','assets/receta/receta-06.jpeg',
+  'assets/receta/receta-07.jpeg','assets/receta/receta-08.jpeg','assets/receta/receta-09.jpeg',
+  'assets/receta/receta-10.jpeg'
+];
+
+// FASE 4 — Mensaje final (literal)
+const finalMessage = "quiero que sepas que eres lo mas importante en mi vida, y aunque suene pesado, es la verdad, no sé que haría si te pasara algo, y lamento mucho de corazon haberte descuidado. te amo de todo corazon.";
+
+/* ============================================================
+   MOTOR
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const messageLayer = $('#messageLayer');
+const mediaLayer   = $('#mediaLayer');
+const recetaLayer  = $('#recetaLayer');
+const finalLayer   = $('#finalLayer');
+const progress     = $('#progress');
+const replayBtn    = $('#replay');
+
+const clamp = (v,a,b)=> Math.max(a, Math.min(b, v));
+const wait  = ms => new Promise(r => setTimeout(r, ms));
+const nextFrame = () => new Promise(r => requestAnimationFrame(()=> requestAnimationFrame(r)));
+
+let runId = 0; // permite cancelar una corrida anterior al repetir
+
+/* ----- Bokeh ----- */
+function buildBokeh(){
+  const layer = $('#bokeh');
+  const tones = ['#ff9ec7','#ffd9a0','#ff6f91','#c9a0ff','#ffb3c6'];
+  for(let i=0;i<16;i++){
+    const b = document.createElement('div');
+    b.className = 'bokeh';
+    const size = 40 + Math.random()*130;
+    b.style.setProperty('--c', tones[i % tones.length]);
+    b.style.setProperty('--d', (16 + Math.random()*16) + 's');
+    b.style.setProperty('--delay', (-Math.random()*22) + 's');
+    b.style.setProperty('--o', (0.10 + Math.random()*0.16).toFixed(2));
+    b.style.width = size+'px';
+    b.style.height = size+'px';
+    b.style.left = (Math.random()*100) + 'vw';
+    layer.appendChild(b);
+  }
+}
+
+/* ----- Progreso ----- */
+let totalSteps = messages.length + recuerditos.length + 1 /*recetas*/ + 1 /*final*/;
+let stepDone = 0;
+function tickProgress(){
+  stepDone++;
+  progress.style.width = clamp((stepDone/totalSteps)*100, 0, 100) + '%';
+}
+
+/* ----- Fase 1: mensajes ----- */
+async function showMessage(text, myRun){
+  const el = document.createElement('div');
+  el.className = 'message';
+  el.textContent = text;
+  messageLayer.appendChild(el);
+  await nextFrame();
+  if(myRun !== runId) return el.remove();
+  el.classList.add('in');
+
+  const read = clamp(1300 + 45*text.length, 2400, 5200);
+  await wait(read);
+  if(myRun !== runId) return el.remove();
+
+  el.classList.remove('in');
+  el.classList.add('out');
+  setTimeout(()=> el.remove(), 1400);
+  tickProgress();
+  await wait(430); // ligero solape con el siguiente
+}
+
+async function runMessages(myRun){
+  for(const m of messages){
+    if(myRun !== runId) return;
+    await showMessage(m, myRun);
+  }
+}
+
+/* ----- Fase 2: recuerditos ----- */
+function playVideo(v, myRun){
+  return new Promise(resolve=>{
+    let settled = false;
+    const done = ()=>{ if(settled) return; settled = true; cleanup(); resolve(); };
+    const onEnded = ()=> done();
+    const onError = ()=> done();
+    const cap = setTimeout(done, 16000); // tope de seguridad
+    function cleanup(){
+      v.removeEventListener('ended', onEnded);
+      v.removeEventListener('error', onError);
+      clearTimeout(cap);
+    }
+    v.addEventListener('ended', onEnded);
+    v.addEventListener('error', onError);
+    const p = v.play();
+    if(p && p.catch){
+      p.catch(()=>{ /* autoplay bloqueado: el tope avanzará igual */ });
+    }
+  });
+}
+
+async function showRecuerdito(item, myRun){
+  const card = document.createElement('figure');
+  card.className = 'card';
+
+  // fondo difuminado (solo fotos)
+  if(item.type === 'photo'){
+    const bg = document.createElement('div');
+    bg.className = 'bg';
+    bg.style.backgroundImage = `url("${item.src}")`;
+    card.appendChild(bg);
+  }
+
+  const frame = document.createElement('div');
+  frame.className = 'frame';
+  let media;
+  if(item.type === 'video'){
+    media = document.createElement('video');
+    media.src = item.src;
+    media.muted = true; media.defaultMuted = true;
+    media.setAttribute('muted','');
+    media.setAttribute('playsinline','');
+    media.setAttribute('webkit-playsinline','');
+    media.preload = 'auto';
+  } else {
+    media = document.createElement('img');
+    media.src = item.src;
+    media.alt = item.caption;
+    media.classList.add('kb');
+  }
+  frame.appendChild(media);
+  card.appendChild(frame);
+
+  const cap = document.createElement('figcaption');
+  cap.className = 'cap';
+  cap.textContent = item.caption;
+  card.appendChild(cap);
+
+  mediaLayer.appendChild(card);
+  await nextFrame();
+  if(myRun !== runId) return card.remove();
+  card.classList.add('in');
+
+  if(item.type === 'video'){
+    await playVideo(media, myRun);
+  } else {
+    await wait(5400);
+  }
+  if(myRun !== runId) return card.remove();
+
+  card.classList.add('out');
+  setTimeout(()=> card.remove(), 1400);
+  tickProgress();
+  await wait(680); // solape entre recuerditos
+}
+
+async function runRecuerditos(myRun){
+  for(const item of recuerditos){
+    if(myRun !== runId) return;
+    await showRecuerdito(item, myRun);
+  }
+}
+
+/* ----- Fase 3: recetas (montaje rápido) ----- */
+async function showReceta(src, myRun){
+  const wrap = document.createElement('div');
+  wrap.className = 'receta';
+  const bg = document.createElement('div');
+  bg.className = 'bg';
+  bg.style.backgroundImage = `url("${src}")`;
+  const pic = document.createElement('div');
+  pic.className = 'pic';
+  pic.style.backgroundImage = `url("${src}")`;
+  wrap.append(bg, pic);
+  recetaLayer.appendChild(wrap);
+
+  await nextFrame();
+  if(myRun !== runId) return wrap.remove();
+  wrap.classList.add('in');
+  await wait(640);
+  if(myRun !== runId) return wrap.remove();
+  wrap.classList.add('out');
+  setTimeout(()=> wrap.remove(), 700);
+  await wait(360); // ritmo rápido, con solape
+}
+
+async function runRecetas(myRun){
+  for(const src of recetas){
+    if(myRun !== runId) return;
+    await showReceta(src, myRun);
+  }
+  tickProgress();
+}
+
+/* ----- Fase 4: mensaje final ----- */
+async function runFinal(myRun){
+  document.body.classList.add('calm');
+  await wait(400);
+  if(myRun !== runId) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'final';
+  const p = document.createElement('p');
+  p.className = 'final-text';
+  p.textContent = finalMessage;
+  const heart = document.createElement('div');
+  heart.className = 'final-heart';
+  heart.textContent = '❤';
+  wrap.append(p, heart);
+  finalLayer.appendChild(wrap);
+
+  await nextFrame();
+  if(myRun !== runId) return wrap.remove();
+  wrap.classList.add('in');
+  tickProgress();
+
+  await wait(3400);
+  if(myRun !== runId) return;
+  replayBtn.classList.add('show');
+}
+
+/* ----- Orquestador ----- */
+async function run(){
+  const myRun = ++runId;
+  // limpiar todo (por si es un repeat)
+  [messageLayer, mediaLayer, recetaLayer, finalLayer].forEach(l => l.innerHTML='');
+  document.body.classList.remove('calm');
+  replayBtn.classList.remove('show');
+  stepDone = 0; progress.style.width = '0%';
+
+  await runMessages(myRun);
+  if(myRun !== runId) return;
+  await runRecuerditos(myRun);
+  if(myRun !== runId) return;
+  await runRecetas(myRun);
+  if(myRun !== runId) return;
+  await runFinal(myRun);
+}
+
+/* ----- Precarga + arranque ----- */
+function preload(){
+  const imgs = [
+    ...recuerditos.filter(r=>r.type==='photo').map(r=>r.src),
+    ...recetas
+  ];
+  imgs.forEach(src=>{ const im = new Image(); im.src = src; });
+}
+
+async function start(){
+  buildBokeh();
+  preload();
+  // dar un respiro para que cargue lo primero, luego desvanecer el loader
+  await wait(1100);
+  $('#loader').classList.add('hide');
+  await wait(700);
+  run();
+}
+
+replayBtn.addEventListener('click', ()=>{
+  replayBtn.classList.remove('show');
+  run();
+});
+
+let started = false;
+function startOnce(){ if(started) return; started = true; start(); }
+window.addEventListener('load', startOnce);
+// fallback por si 'load' ya pasó
+if(document.readyState === 'complete') startOnce();
+</script>
+</body>
+</html>
