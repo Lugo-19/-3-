@@ -206,7 +206,7 @@
     position:absolute;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap: clamp(14px, 2.6vh, 26px);
-    max-width: 26ch;
+    max-width: min(90vw, 30rem);
     padding: 3vh 7vw;
     text-align:center;
     opacity:0; transform: translateY(26px) scale(.99); filter: blur(8px);
@@ -364,7 +364,7 @@ const recetas = [
 ];
 
 // FASE 4 — Mensaje final (literal)
-const finalMessage = "Quiero que sepas, que para bien o para mal jaja, te has convertido lo mas importante en mi vida. Lamento que me sea algo tan pesado jeje, pero no sé que sería de mi si te llegará a pasar algo, de verdad lamento haberte descuidado. Mientras pueda, estaré a tu lado apoyandote en lo que pueda. Eres una persona muy grandiosa, te amo mi rencorosa♥️";
+const finalMessage = "Quiero que sepas, que para bien o para mal jaja, te has convertido en lo mas importante de mi vida. Lamento que me sea algo tan pesado jeje, pero no sé que sería de mi si te llegará a pasar algo, de verdad lamento haberte descuidado en ese momento, lamento mucho no respetar tu forma de ver las cosas. Mientras pueda, estaré a tu lado apoyandote en lo que pueda y te respetaré. Eres una persona muy grandiosa y te amo mucho mi rencorosa♥️";
 
 /* ============================================================
    MOTOR
@@ -601,6 +601,20 @@ async function runRecetas(myRun){
 }
 
 /* ----- Fase 4: mensaje final ----- */
+// Reduce el tamaño del texto final solo lo necesario para que quepa en pantalla
+function fitFinal(wrap){
+  const textEl = wrap.querySelector('.final-text');
+  if(!textEl) return;
+  const avail = window.innerHeight - 20;
+  let px = parseFloat(getComputedStyle(textEl).fontSize);
+  let guard = 0;
+  while(wrap.offsetHeight > avail && px > 13 && guard < 80){
+    px -= 1;
+    textEl.style.fontSize = px + 'px';
+    guard++;
+  }
+}
+
 async function runFinal(myRun){
   document.body.classList.add('calm');
   await wait(400);
@@ -619,6 +633,7 @@ async function runFinal(myRun){
 
   await nextFrame();
   if(myRun !== runId) return wrap.remove();
+  fitFinal(wrap);
   wrap.classList.add('in');
   tickProgress();
 
